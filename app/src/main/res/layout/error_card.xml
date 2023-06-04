@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="12dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    android:layout_marginTop="@dimen/default_padding">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/card_body"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/corners"
+        android:padding="@dimen/default_padding">
+
+        <ImageView
+            android:id="@+id/card_lighting"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:contentDescription="@string/lighting"
+            android:src="@drawable/error_image"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/card_header"
+            style="@style/card_header.low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_padding"
+            android:text="@string/header"
+            android:textColor="@color/black"
+            app:layout_constraintBottom_toTopOf="@+id/card_subhead"
+            app:layout_constraintStart_toEndOf="@id/card_lighting"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/card_subhead"
+            style="@style/card_subhead.low"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/default_padding"
+            android:textColor="@color/black"
+            android:text="@string/subhead"
+            app:layout_constraintStart_toEndOf="@id/card_lighting"
+            app:layout_constraintTop_toBottomOf="@+id/card_header" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
