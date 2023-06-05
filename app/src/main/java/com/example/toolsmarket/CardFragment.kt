@@ -1,26 +1,23 @@
 package com.example.toolsmarket
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.toolsmarket.adapters.CardsListAdapter
 import com.example.toolsmarket.databinding.FragmentCardsBinding
 import com.example.toolsmarket.models.LoadingResult
 import com.example.toolsmarket.models.Card
-import com.example.toolsmarket.networks.ApiNetworkSource
-import com.example.toolsmarket.networks.INetworkSource
 import com.example.toolsmarket.repository.Mock
 import com.example.toolsmarket.viewModels.CardsFragmentViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 /**
  * A simple [Fragment] subclass.
@@ -28,12 +25,12 @@ import kotlinx.coroutines.withContext
  * create an instance of this fragment.
  */
 class CardFragment : Fragment() {
-
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    private lateinit var viewModel: CardsFragmentViewModel
     private var _binding: FragmentCardsBinding? = null
     private val cardsAdapter = CardsListAdapter()
-    private val viewModel = CardsFragmentViewModel()
-    val liveData = MutableLiveData<LoadingResult<List<Card>?>>()
-    private val network: INetworkSource = ApiNetworkSource()
+
 
     private val binding get() = _binding!!
     override fun onCreateView(
@@ -42,27 +39,15 @@ class CardFragment : Fragment() {
     ): View {
         _binding = FragmentCardsBinding.inflate(inflater, container, false)
         init()
-
-
-        lifecycleScope.launch {
-            val response = withContext(Dispatchers.IO) {
-                network.getCards()
-            }
-            if (response.isSuccessful) {
-                val responses = response.body()
-                val cards = responses?.let { Card.getCards(it) }
-                val result = LoadingResult.Success(cards)
-                liveData.postValue(result)
-            } else {
-                liveData.postValue(LoadingResult.Failure("internet error", "check your internet connection"))
-            }
-        }
-
-
+        viewModel.init()
         return binding.root
     }
 
     private fun init() {
+
+        (activity?.application as ApplicationCore).component.inject(this)
+        viewModel = ViewModelProvider(this, viewModelFactory).get(CardsFragmentViewModel::class.java)
+
         binding.cards.layoutManager = LinearLayoutManager(
             context,
             LinearLayoutManager.VERTICAL, false
@@ -83,7 +68,7 @@ class CardFragment : Fragment() {
             }
 
         }
-        liveData.observe(viewLifecycleOwner, observer)
+        viewModel.liveData.observe(viewLifecycleOwner, observer)
     }
 
     override fun onDestroyView() {

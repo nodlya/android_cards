@@ -9,7 +9,6 @@ interface CardsApi {
     suspend fun getCards(): Response<List<CardRequest>>
 
 
-    //то же самое через lifecyclescope
     @GET("new_text.json")
     suspend fun getCardsCycle(): Response<List<CardRequest>>
 }
